@@ -1,180 +1,49 @@
-M1 SHIPPING REELS APPLICATION
-Project Overview
+# Flutter Image Description App (Camera + LLM)
 
-This is a Flutter application developed as part of the technical assessment.
-The application displays a reels-style vertical video feed with pagination, pull-to-refresh, and caching functionality.
+This Flutter app lets a user:
+1. Capture a photo from the camera (or pick from gallery).
+2. Send that image to an LLM with vision support.
+3. Show a human-readable description of the image.
 
-The project follows Clean Architecture principles and uses BLoC for state management.
+## Tech stack
+- Flutter + Dart
+- `image_picker` for camera/gallery image selection
+- `http` for API calls
+- OpenAI Chat Completions API (`gpt-4o-mini` by default)
 
-FEATURES
+## Setup
 
-Vertical reels-style scrolling (PageView)
-
-Pagination (infinite scrolling)
-
-Pull-to-refresh functionality
-
-Video caching using flutter_cache_manager
-
-Clean Architecture implementation
-
-BLoC state management
-
-Dependency Injection using get_it
-
-Shimmer loading effect
-
-Brand-aligned UI (based on M1 Shipping)
-
-"Visit Website" CTA that opens the official website externally
-
-TECHNOLOGIES USED
-
-Flutter
-
-Dart
-
-flutter_bloc
-
-get_it
-
-http
-
-video_player
-
-flutter_cache_manager
-
-shimmer
-
-url_launcher
-
-INSTALLATION STEPS
-
-Clone the repository
-
-git clone <repository-url>
-cd <project-folder>
-
-Install dependencies
-
+### 1) Install dependencies
+```bash
 flutter pub get
+```
 
-Run the application
+### 2) Provide API key at run-time
+Use `--dart-define` so secrets are not hard-coded:
 
-flutter run
+```bash
+flutter run --dart-define=OPENAI_API_KEY=your_openai_api_key
+```
 
-Ensure a device or emulator is connected before running.
+## How it works
+- `ImageDescriptionPage` handles image selection and UI state.
+- `VisionApiService` converts the selected image to base64 and sends it to the LLM.
+- The generated description is rendered in the UI.
 
-ANDROID REQUIREMENT
+## File structure
+- `lib/main.dart`
+- `lib/features/image_description/presentation/pages/image_description_page.dart`
+- `lib/features/image_description/data/vision_api_service.dart`
 
-Make sure AndroidManifest.xml includes internet permission:
+## Platform notes
+### Android
+- `INTERNET` and `CAMERA` permissions are declared in `AndroidManifest.xml`.
 
-<uses-permission android:name="android.permission.INTERNET"/>
-IOS REQUIREMENT
+### iOS
+- `NSCameraUsageDescription` and `NSPhotoLibraryUsageDescription` are declared in `Info.plist`.
 
-If running on iOS and encountering dependency issues:
-
-cd ios
-pod install
-
-Then run:
-
-flutter run
-
-HOW TO RUN THE APPLICATION
-
-Connect a physical device or start an emulator.
-
-Run the following command from project root:
-
-flutter run
-
-The application will launch and display the reels-style video feed.
-
-PROJECT STRUCTURE
-
-lib/
-
-core/
-
-di/ Dependency Injection setup
-
-error/ Custom exceptions
-
-network/ API client
-
-features/
-reels/
-data/
-datasource/ Remote data source
-models/ Data models
-repositories/ Repository implementation
-
-domain/
-entities/    Business entities
-repositories/ Repository contracts
-usecases/    Business logic
-
-presentation/
-bloc/        BLoC state management
-pages/       UI screens
-widgets/     Reusable UI components
-
-
-main.dart Application entry point
-
-ARCHITECTURE
-
-The application follows Clean Architecture principles:
-
-Presentation Layer
-
-UI components
-
-BLoC state management
-
-Domain Layer
-
-Entities
-
-Repository interfaces
-
-Use cases
-
-Data Layer
-
-Remote data source
-
-Repository implementation
-
-This structure ensures scalability, maintainability, and separation of concerns.
-
-PAGINATION IMPLEMENTATION
-
-Pagination is implemented using PageView.builder.
-
-When the user scrolls near the last two items, a new page of data is fetched and appended to the existing list.
-
-CACHING STRATEGY
-
-Video caching is implemented using flutter_cache_manager.
-
-Videos are downloaded once.
-
-Files are stored locally.
-
-Subsequent loads reuse cached files.
-
-Reduces repeated network calls and improves performance.
-
-API HANDLING
-
-The provided API endpoint is called as instructed.
-
-Since the endpoint does not return usable data, structured dummy JSON data is used while maintaining:
-
-HTTP call structure
-
-Pagination behavior
-
-Clean Architecture flow
+## Future enhancements
+- Add BLoC/Cubit for state management.
+- Add loading skeleton and better error cards.
+- Keep description history locally.
+- Let users choose language/tone of generated descriptions.
